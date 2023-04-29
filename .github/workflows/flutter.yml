@@ -1,4 +1,4 @@
-name: Build and Release APK
+name: Build and Generate APK
 
 on:
   push:
@@ -7,18 +7,26 @@ on:
 
 jobs:
   build:
-    name: Build APK
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Flutter
-        uses: jeanluc243/Flutter-Deployment@1fd33eb513293af0c6cde57363d66a6a848ef6e5       
-      - name: Get dependencies
-        run: flutter pub get
-      - name: Build APK
-        run: flutter build apk --split-per-abi --build-name=1.0.0 --build-number=1 --output=dist_apk/
-      - name: Archive artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: APK
-          path: dist_apk/
+    - uses: actions/checkout@v2
+
+    - name: Setup Java
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v1
+      with:
+        flutter-version: '2.8.2'
+    
+    - name: Install dependencies
+      run: flutter pub get
+
+    - name: Build APK
+      run: flutter build apk --release
+
+    - name: Move APK to dist_apk folder
+      run: mv build/app/outputs/flutter-apk/app-release.apk dist_apk/

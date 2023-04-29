@@ -12,9 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up Flutter
-        uses: subosito/flutter-action@v1
-        with:
-          flutter-version: '2.18.2'
+        uses: jeanluc243/Flutter-Deployment@1fd33eb513293af0c6cde57363d66a6a848ef6e5       
       - name: Get dependencies
         run: flutter pub get
       - name: Build APK

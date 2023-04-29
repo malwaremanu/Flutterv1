@@ -1,4 +1,4 @@
-name: Build and Generate APK
+name: Build and Release APK
 
 on:
   push:
@@ -8,35 +8,23 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-
-    - name: Setup Java
-      uses: actions/setup-java@v2
-      with:
-        java-version: 11
-        distribution: 'adopt'
-        java-package: jdk
-        architecture: x64
-        check-latest: false
-        server-id: github
-        server-username: GITHUB_ACTOR
-        server-password: GITHUB_TOKEN
-        overwrite-settings: true
-        job-status: success
-
-
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v1
-      with:
-        flutter-version: '2.8.2'
-    
-    - name: Install dependencies
-      run: flutter pub get
-
-    - name: Build APK
-      run: flutter build apk --release
-
-    - name: Move APK to dist_apk folder
-      run: mv build/app/outputs/flutter-apk/app-release.apk dist_apk/
+      - uses: actions/checkout@v2
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: adopt
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          flutter-version: stable
+      - name: Get dependencies
+        run: flutter pub get
+      - name: Build APK
+        run: flutter build apk
+      - name: Save APK artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: my-app
+          path: build/app/outputs/flutter-apk/app-release.apk

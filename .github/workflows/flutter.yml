@@ -1,0 +1,26 @@
+name: Build and Release APK
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '2.0.6'
+      - name: Get dependencies
+        run: flutter pub get
+      - name: Build APK
+        run: flutter build apk --split-per-abi --build-name=1.0.0 --build-number=1 --output=dist_apk/
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: APK
+          path: dist_apk/
